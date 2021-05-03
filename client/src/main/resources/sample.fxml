@@ -20,7 +20,7 @@
         <Button text="reg" onAction="#showRegWindow" minWidth="100"/>
     </HBox>
     <Text fx:id="ipText" text="Enter IP Adress of Server"/>
-    <TextField fx:id="ipAddress" HBox.hgrow="ALWAYS" text="localhost"/>
+    <TextField fx:id="ipAddress" HBox.hgrow="ALWAYS" promptText="Enter IP Address of Server"/>
 
     <HBox VBox.vgrow ="ALWAYS">
         <TextArea fx:id="textArea" HBox.hgrow="ALWAYS" editable="false"/>

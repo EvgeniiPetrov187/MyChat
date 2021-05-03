@@ -7,7 +7,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
+import java.net.Socket;
+
 public class RegController {
+    @FXML
+    public TextField ipAddressReg;
     @FXML
     private TextField loginField;
     @FXML
@@ -18,6 +22,8 @@ public class RegController {
     private TextArea textArea;
 
     private Controller controller;
+
+    private Socket socket;
 
     public void setController(Controller controller) {
         this.controller = controller;
@@ -36,10 +42,11 @@ public class RegController {
         String login = loginField.getText().trim();
         String password = passwordField.getText().trim();
         String nickname = nicknameField.getText().trim();
+        String ipAddress = ipAddressReg.getText().trim();
 
         if (login.length() * password.length() * nickname.length() == 0) {
             return;
         }
-        controller.registration(login, password, nickname);
+        controller.registration(login, password, nickname, ipAddress);
     }
 }

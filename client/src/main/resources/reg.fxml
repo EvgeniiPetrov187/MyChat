@@ -15,6 +15,7 @@
     <TextField fx:id="loginField" promptText="login"/>
     <PasswordField fx:id="passwordField" promptText="password"/>
     <TextField fx:id="nicknameField" promptText="nickname"/>
+    <TextField fx:id="ipAddressReg" HBox.hgrow="ALWAYS" promptText="Enter IP Address of Server"/>
     <TextArea fx:id="textArea" VBox.vgrow="ALWAYS"/>
 
     <Button text="reg" minWidth="100" onAction="#tryToReg"/>

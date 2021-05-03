@@ -51,7 +51,7 @@ public class Controller implements Initializable {
     private DataInputStream in;
     private DataOutputStream out;
     private final int PORT = 29189;
-    private String ipAddressHost = "localhost";
+    private String ipAddressHost;
 
     private boolean authenticated;
     private String nickname;
@@ -100,10 +100,9 @@ public class Controller implements Initializable {
         setAuthenticated(false);
     }
 
-    private void connect() {
+    private void connect(String ipAddressOfReg) {
         try {
-            ipAddressHost = ipAddress.getText();
-            socket = new Socket(ipAddressHost, PORT);
+            socket = new Socket(ipAddressOfReg, PORT);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
 
@@ -196,7 +195,8 @@ public class Controller implements Initializable {
 
     public void tryToAuth(ActionEvent actionEvent) {
         if (socket == null || socket.isClosed()) {
-            connect();
+            ipAddressHost = ipAddress.getText();
+            connect(ipAddressHost);
         }
         try {
             out.writeUTF(String.format("%s %s %s", Command.AUTH, loginField.getText().trim(), passwordField.getText().trim()));
@@ -250,9 +250,10 @@ public class Controller implements Initializable {
         }
     }
 
-    public void registration(String login, String password, String nickname) {
+    public void registration(String login, String password, String nickname, String ipAddressReg) {
         if (socket == null || socket.isClosed()) {
-            connect();
+            ipAddress.setText(ipAddressReg);
+            connect(ipAddressReg);
         }
         try {
             out.writeUTF(String.format("%s %s %s %s", Command.REG, login, password, nickname));
