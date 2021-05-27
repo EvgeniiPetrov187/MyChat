@@ -6,6 +6,7 @@
 <?import java.net.URL?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.text.Text?>
 <VBox fx:controller="client.Controller"
       xmlns:fx="http://javafx.com/fxml" alignment="center">
     <stylesheets>
@@ -18,6 +19,8 @@
         <Button text="auth" onAction="#tryToAuth" minWidth="100"/>
         <Button text="reg" onAction="#showRegWindow" minWidth="100"/>
     </HBox>
+    <Text fx:id="ipText" text="Enter IP Adress of Server"/>
+    <TextField fx:id="ipAddress" HBox.hgrow="ALWAYS" promptText="Enter IP Address of Server"/>
 
     <HBox VBox.vgrow ="ALWAYS">
         <TextArea fx:id="textArea" HBox.hgrow="ALWAYS" editable="false"/>

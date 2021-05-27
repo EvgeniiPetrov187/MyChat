@@ -14,6 +14,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -23,6 +24,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -40,12 +42,16 @@ public class Controller implements Initializable {
     public HBox msgPanel;
     @FXML
     public ListView<String> clientList;
+    @FXML
+    public TextField ipAddress;
+    @FXML
+    public Text ipText;
 
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
     private final int PORT = 29189;
-    private final String IP_ADDRESS = "localhost";
+    private String ipAddressHost;
 
     private boolean authenticated;
     private String nickname;
@@ -63,12 +69,17 @@ public class Controller implements Initializable {
         authPanel.setManaged(!authenticated);
         clientList.setVisible(authenticated);
         clientList.setManaged(authenticated);
+        ipAddress.setVisible(!authenticated);
+        ipAddress.setManaged(!authenticated);
+        ipText.setVisible(!authenticated);
+        ipText.setManaged(!authenticated);
 
         if (!authenticated) {
             nickname = "";
         }
         textArea.clear();
         setTitle(nickname);
+
     }
 
     @Override
@@ -89,9 +100,9 @@ public class Controller implements Initializable {
         setAuthenticated(false);
     }
 
-    private void connect() {
+    private void connect(String ipAddressOfReg) {
         try {
-            socket = new Socket(IP_ADDRESS, PORT);
+            socket = new Socket(ipAddressOfReg, PORT);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
 
@@ -110,7 +121,7 @@ public class Controller implements Initializable {
                                 nickname = token[1];
                                 setAuthenticated(true);
                                 history.findFile(loginField.getText());
-                                textArea.appendText(history.publicHistory(history.findFile(loginField.getText()),10));
+                                textArea.appendText(history.publicHistory(history.findFile(loginField.getText()), 10));
                                 break;
                             }
 
@@ -149,7 +160,7 @@ public class Controller implements Initializable {
                             }
                         } else {
                             textArea.appendText(str + "\n");
-                            history.addHistory(history.findFile(loginField.getText()), str+"\n");
+                            history.addHistory(history.findFile(loginField.getText()), str + "\n");
                         }
                     }
                 } catch (RuntimeException e) {
@@ -166,10 +177,9 @@ public class Controller implements Initializable {
                     }
                 }
             }).start();
-
-
         } catch (IOException e) {
-            e.printStackTrace();
+            ipAddress.setText("localhost");
+            textArea.setText("Socket or Host is wrong!");
         }
     }
 
@@ -185,7 +195,8 @@ public class Controller implements Initializable {
 
     public void tryToAuth(ActionEvent actionEvent) {
         if (socket == null || socket.isClosed()) {
-            connect();
+            ipAddressHost = ipAddress.getText();
+            connect(ipAddressHost);
         }
         try {
             out.writeUTF(String.format("%s %s %s", Command.AUTH, loginField.getText().trim(), passwordField.getText().trim()));
@@ -239,9 +250,10 @@ public class Controller implements Initializable {
         }
     }
 
-    public void registration(String login, String password, String nickname) {
+    public void registration(String login, String password, String nickname, String ipAddressReg) {
         if (socket == null || socket.isClosed()) {
-            connect();
+            ipAddress.setText(ipAddressReg);
+            connect(ipAddressReg);
         }
         try {
             out.writeUTF(String.format("%s %s %s %s", Command.REG, login, password, nickname));
